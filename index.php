@@ -6,6 +6,6 @@ $db = new Database();
 $conexion = $db->getConnection();
 
 if($conexion){
-    echo "¡Conexión exitosa a PDO usando MVC!";
+    echo "SU, si jala la vaina!";
 }
 ?>
