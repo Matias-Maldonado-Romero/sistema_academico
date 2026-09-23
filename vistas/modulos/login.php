@@ -6,7 +6,6 @@
         <div class="col-lg-5 col-12">
             <div id="auth-left">
                 <div class="auth-logo">
-                    <!-- Ruta del logo corregida con BASE_URL -->
                     <a href="#"><img src="<?php echo BASE_URL; ?>assets/images/logo/logo.png" alt="Logo"></a>
                 </div>
                 <h1 class="auth-title">Log in.</h1>
@@ -15,14 +14,13 @@
                 <!-- Formulario adaptado a POST -->
                 <form method="POST">
                     <div class="form-group position-relative has-icon-left mb-4">
-                        <!-- name="ingEmail" añadido -->
-                        <input type="email" class="form-control form-control-xl" name="ingEmail" placeholder="Username" required>
+                        <!-- CAMBIADO DE type="email" A type="text" para permitir nombres de usuario (ej. admin) -->
+                        <input type="text" class="form-control form-control-xl" name="ingEmail" placeholder="Username or Email" required>
                         <div class="form-control-icon">
                             <i class="bi bi-person"></i>
                         </div>
                     </div>
                     <div class="form-group position-relative has-icon-left mb-4">
-                        <!-- name="ingPassword" añadido -->
                         <input type="password" class="form-control form-control-xl" name="ingPassword" placeholder="Password" required>
                         <div class="form-control-icon">
                             <i class="bi bi-shield-lock"></i>
@@ -35,7 +33,6 @@
                         </label>
                     </div>
                     
-                    <!-- type="submit" añadido -->
                     <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Log in</button>
 
                     <?php

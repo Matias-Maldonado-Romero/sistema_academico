@@ -2,39 +2,30 @@
 // Archivo: config/database.php
 
 class Database {
-    // Credenciales por defecto de XAMPP/WAMP
     private $host = "localhost";
-    private $db_name = "sistema_academico";
+    private $db_name = "sistema_academico_respaldo";
     private $username = "root"; 
     private $password = ""; 
     public $conn;
 
-    // Función para obtener la conexión
-    public function getConnection() {
-        $this->conn = null;
+    // AÑADIMOS 'static' AQUÍ
+    public static function getConnection() {
+        $conn = null;
 
         try {
-            // DSN (Data Source Name): define el tipo de BD, host y nombre
-            $dsn = "mysql:host=" . $this->host . ";dbname=" . $this->db_name . ";charset=utf8mb4";
+            $dsn = "mysql:host=" . (new self)->host . ";dbname=" . (new self)->db_name . ";charset=utf8mb4";
             
-            // Instanciamos PDO
-            $this->conn = new PDO($dsn, $this->username, $this->password);
+            // Instanciamos PDO de forma estática segura
+            $conn = new PDO($dsn, (new self)->username, (new self)->password);
             
-            // CONFIGURACIONES DE SEGURIDAD Y MANEJO DE ERRORES:
-            
-            // 1. Que PDO lance "Excepciones" si hay un error en SQL. 
-            // Esto evita que los errores revelen información sensible y nos ayuda a debuggear.
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            
-            // 2. Que los datos nos lleguen siempre como un Array Asociativo (ej: $fila['nombre'])
-            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             
         } catch(PDOException $exception) {
-            // Si la conexión falla, capturamos el error aquí
             echo "Error de conexión a la Base de Datos: " . $exception->getMessage();
         }
 
-        return $this->conn;
+        return $conn;
     }
 }
 ?>

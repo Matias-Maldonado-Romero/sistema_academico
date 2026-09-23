@@ -1,3 +1,9 @@
+<?php
+// Asegúrate de que la sesión esté iniciada al principio de todo
+if (session_status() === PHP_SESSION_NONE) {
+    session_status(); // o session_start(); según lo tengas
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -8,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- CSS con BASE_URL para evitar fallos de ruta -->
+    <!-- CSS Global (¡AHORA SÍ CARGAN SIEMPRE, INCLUYENDO EL LOGIN!) -->
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/bootstrap.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/vendors/iconly/bold.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
@@ -16,21 +22,8 @@
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/app.css">
     <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/images/favicon.svg" type="image/x-icon">
     
-    <!-- CSS Personalizado para ajustes de Layout -->
-    <style>
-        :root {
-            --sidebar-width: 300px;
-        }
-        .app-wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
-        .main-wrapper {
-            flex-grow: 1;
-            padding: 2rem;
-            width: calc(100% - var(--sidebar-width));
-        }
-    </style>
+    <!-- CSS específico para la página de Login (Mazer) -->
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/pages/auth.css">
 </head>
 <body>
 
@@ -78,16 +71,16 @@
 
         echo '</div>'; // Cierre #app
 
-        // SCRIPTS SOLO PARA USUARIOS LOGUEADOS (Evita 'querySelector is null' en Login)
-        echo '<script src="' . BASE_URL . 'assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>';
-        echo '<script src="' . BASE_URL . 'assets/js/bootstrap.bundle.min.js"></script>';
-        echo '<script src="' . BASE_URL . 'assets/js/main.js"></script>';
-
     } else {
-        // Usuario no autenticado: Carga limpia del Login
+        // Usuario no autenticado: Carga el módulo de login limpio dentro de esta estructura
         include "vistas/modulos/login.php";
     }
     ?>
+
+    <!-- SCRIPTS GLOBALES -->
+    <script src="<?php echo BASE_URL; ?>assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="<?php echo BASE_URL; ?>assets/js/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo BASE_URL; ?>assets/js/main.js"></script>
 
 </body>
 </html>

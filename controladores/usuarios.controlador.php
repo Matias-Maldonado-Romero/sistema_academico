@@ -3,53 +3,46 @@
 
 class ControladorUsuarios {
 
-    /*=============================================
-    INGRESO DE USUARIO (LOGIN)
-    =============================================*/
     public function ctrIngresoUsuario() {
 
         if (isset($_POST["ingEmail"])) {
 
-            // Validar que el correo tenga un formato válido y no contenga caracteres extraños
-            if (filter_var($_POST["ingEmail"], FILTER_VALIDATE_EMAIL)) {
+            $tabla = "usuarios";
+            $item = "username"; 
+            $valor = trim($_POST["ingEmail"]);
 
-                $tabla = "usuarios";
-                $item = "email";
-                $valor = $_POST["ingEmail"];
+            $respuesta = ModeloUsuarios::mdlMostrarUsuarios($tabla, $item, $valor);
 
-                // Solicitamos la información al Modelo
-                $respuesta = ModeloUsuarios::mdlMostrarUsuarios($tabla, $item, $valor);
+            // Verificamos si el usuario existe 
+            if ($respuesta && $respuesta["username"] == $valor) {
 
-                // 1. Verificamos si el usuario existe y está activo (estado = 1)
-                if ($respuesta && $respuesta["email"] == $_POST["ingEmail"] && $respuesta["estado"] == 1) {
+                // CAMBIO AQUÍ: Comparamos la contraseña en texto plano directamente
+                if ($_POST["ingPassword"] == $respuesta["password"]) {
 
-                    // 2. Verificamos la contraseña encriptada con password_verify()
-                    if (password_verify($_POST["ingPassword"], $respuesta["password"])) {
-
-                        // Variables de Sesión
-                        $_SESSION["iniciarSesion"] = "ok";
-                        $_SESSION["id"]            = $respuesta["id"];
-                        $_SESSION["nombre"]        = $respuesta["nombre"];
-                        $_SESSION["apellido"]      = $respuesta["apellido"];
-                        $_SESSION["email"]         = $respuesta["email"];
-                        $_SESSION["rol"]           = $respuesta["rol"];
-
-                        // Redireccionamos a la página de inicio
-                        echo '<script>
-                            window.location = "inicio";
-                        </script>';
-
-                    } else {
-                        echo '<br><div class="alert alert-danger text-center">Contraseña incorrecta.</div>';
+                    if (session_status() == PHP_SESSION_NONE) {
+                        session_start();
                     }
 
+                    // Variables de Sesión
+                    $_SESSION["iniciarSesion"] = "ok";
+                    $_SESSION["id"]            = $respuesta["id_usuario"];
+                    $_SESSION["nombre"]        = $respuesta["nombre"];
+                    $_SESSION["apellido"]      = $respuesta["apellido"];
+                    $_SESSION["username"]      = $respuesta["username"];
+                    $_SESSION["rol"]           = isset($respuesta["rol"]) ? $respuesta["rol"] : 'Admin';
+
+                    echo '<script>
+                        window.location = "index.php?ruta=inicio";
+                    </script>';
+
                 } else {
-                    echo '<br><div class="alert alert-danger text-center">El usuario no existe o está inactivo.</div>';
+                    echo '<br><div class="alert alert-danger text-center">Contraseña incorrecta.</div>';
                 }
 
             } else {
-                echo '<br><div class="alert alert-warning text-center">Formato de correo no válido.</div>';
+                echo '<br><div class="alert alert-danger text-center">El usuario no existe.</div>';
             }
         }
     }
 }
+?>
