@@ -1,4 +1,3 @@
-<!-- Cargamos el CSS exclusivo de esta vista de Mazer -->
 <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/pages/auth.css">
 
 <div id="auth">
@@ -11,11 +10,9 @@
                 <h1 class="auth-title">Log in.</h1>
                 <p class="auth-subtitle mb-5">Log in with your data that you entered during registration.</p>
 
-                <!-- Formulario adaptado a POST -->
                 <form method="POST">
                     <div class="form-group position-relative has-icon-left mb-4">
-                        <!-- CAMBIADO DE type="email" A type="text" para permitir nombres de usuario (ej. admin) -->
-                        <input type="text" class="form-control form-control-xl" name="ingEmail" placeholder="Username or Email" required>
+                        <input type="text" class="form-control form-control-xl" name="ingEmail" placeholder="Nombre de usuario" autocomplete="username" required>
                         <div class="form-control-icon">
                             <i class="bi bi-person"></i>
                         </div>
@@ -36,14 +33,14 @@
                     <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Log in</button>
 
                     <?php
-                    // Ejecución del controlador backend
                     $login = new ControladorUsuarios();
                     $login->ctrIngresoUsuario();
                     ?>
                 </form>
                 
                 <div class="text-center mt-5 text-lg fs-4">
-                    <p class="text-gray-600">Don't have an account? <a href="#" class="font-bold">Sign up</a>.</p>
+                    <p class="text-gray-600">Don't have an account? 
+                        <a href="index.php?ruta=registro" class="font-bold">Sign up</a>
                     <p><a class="font-bold" href="#">Forgot password?</a>.</p>
                 </div>
             </div>
