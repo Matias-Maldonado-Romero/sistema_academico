@@ -27,7 +27,8 @@ class ControladorUsuarios {
                     return;
                 }
 
-                if ($_POST["ingPassword"] == $respuesta["password"]) {
+                // Verificación segura del hash de la contraseña
+                if (password_verify($_POST["ingPassword"], $respuesta["password"])) {
 
                     if (session_status() == PHP_SESSION_NONE) {
                         session_start();
@@ -50,7 +51,7 @@ class ControladorUsuarios {
                 }
 
             } else {
-                echo '<br><div class="alert alert-danger text-center">El usuario no existe.</div>';
+                echo '<br><div class="alert alert-danger text-center">El usuario no existe</div>';
             }
         }
     }
@@ -110,13 +111,16 @@ class ControladorUsuarios {
             return;
         }
 
+        // Encriptar la contraseña antes de guardarla
+        $passwordEncriptada = password_hash($password, PASSWORD_DEFAULT);
+
         $registro = ModeloUsuarios::mdlRegistrarUsuario([
             "nombre" => $nombre,
             "apellido" => $apellido,
             "ci" => $ci,
             "correo" => $correo,
             "username" => $username,
-            "password" => $password,
+            "password" => $passwordEncriptada,
             "rol" => $rol
         ]);
 
@@ -183,13 +187,16 @@ class ControladorUsuarios {
             return;
         }
 
+        // Encriptar la contraseña antes de guardarla
+        $passwordEncriptada = password_hash($password, PASSWORD_DEFAULT);
+
         $creado = ModeloUsuarios::mdlRegistrarUsuario([
             "nombre" => $nombre,
             "apellido" => $apellido,
             "ci" => $ci,
             "correo" => $correo,
             "username" => $username,
-            "password" => $password,
+            "password" => $passwordEncriptada,
             "rol" => $rol
         ]);
 
@@ -215,6 +222,7 @@ class ControladorUsuarios {
         $apellido = trim($_POST["apellido"] ?? "");
         $correo = trim($_POST["correo"] ?? "");
         $rol = trim($_POST["rol"] ?? "");
+        $password = $_POST["password"] ?? "";
         $rolesPermitidos = ["Admin", "Administrador", "Docente", "Secretaria", "Usuario"];
 
         if ($idUsuario < 1 || $nombre === "" || $apellido === "" || $correo === "") {
@@ -235,13 +243,18 @@ class ControladorUsuarios {
             return;
         }
 
+        // Si envió contraseña nueva, se encripta; si no, se envía vacía para mantener la actual en el modelo
+        if (!empty($password)) {
+            $password = password_hash($password, PASSWORD_DEFAULT);
+        }
+
         $resultado = ModeloUsuarios::mdlEditarUsuario([
             "id_usuario" => $idUsuario,
             "nombre" => $nombre,
             "apellido" => $apellido,
             "correo" => $correo,
             "rol" => $rol,
-            "password" => $_POST["password"] ?? ""
+            "password" => $password
         ]);
 
         $GLOBALS["usuarioMensaje"] = $resultado

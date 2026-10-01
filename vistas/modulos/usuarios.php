@@ -2,7 +2,6 @@
 require_once "controladores/usuarios.controlador.php";
 require_once "modelos/usuarios.modelo.php";
 
-// 1. Acciones
 $controlador = new ControladorUsuarios();
 
 $controlador->ctrCrearUsuario();
@@ -18,7 +17,7 @@ $puedeAdministrar = isset($_SESSION["iniciarSesion"], $_SESSION["rol"])
 
 <div class="container-fluid">
 
-    <!-- 2. Lista de usuarios -->
+    <!--  usuarios -->
     <div class="card shadow-sm mb-4">
 
         <div class="card-body d-flex justify-content-between align-items-center">
@@ -133,23 +132,17 @@ $puedeAdministrar = isset($_SESSION["iniciarSesion"], $_SESSION["rol"])
                                         <button
                                             type="submit"
                                             class="btn btn-danger btn-sm"
-                                        >
-                                            Deshabilitar
-                                        </button>
+                                        >Deshabilitar</button>
                                     <?php else: ?>
                                         <input
                                             type="hidden"
                                             name="estado"
                                             value="activo"
                                         >
-
                                         <button
                                             type="submit"
                                             class="btn btn-success btn-sm"
-                                        >
-                                            Habilitar
-                                        </button>
-
+                                        >Habilitar</button>
                                     <?php endif; ?>
                                 </form>
                             </td>
@@ -190,6 +183,10 @@ $puedeAdministrar = isset($_SESSION["iniciarSesion"], $_SESSION["rol"])
                     <div class="mb-3">
                         <label class="form-label">CI</label>
                         <input type="text" class="form-control" name="nuevoCi" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Correo</label>
+                        <input type="email" class="form-control" name="nuevoCorreo" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Nombre de usuario</label>

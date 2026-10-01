@@ -12,32 +12,31 @@
                 </div>
                 <div class="sidebar-menu">
                     <ul class="menu">
-                        <li class="sidebar-title">Menu</li>
 
-                        <li class="sidebar-item active ">
-                            <a href="index.html" class='sidebar-link'>
+                        <li class="sidebar-item <?php echo (!isset($_GET['ruta']) || $_GET['ruta'] === 'inicio') ? 'active' : ''; ?>">
+                            <a href="index.php?ruta=inicio" class='sidebar-link'>
                                 <i class="bi bi-grid-fill"></i>
                                 <span>Inicio</span>
                             </a>
                         </li>
 
-                        <li class="sidebar-item  has-sub">
-                            <a href="#" class='sidebar-link'>
+                        <li class="sidebar-item <?php echo (isset($_GET['ruta']) && $_GET['ruta'] === 'materias') ? 'active' : ''; ?>">
+                            <a href="index.php?ruta=materias" class='sidebar-link'>
                                 <i class="bi bi-stack"></i>
                                 <span>Materias</span>
                             </a>                           
                         </li>
 
-                        <li class="sidebar-item  has-sub">
-                            <a href="#" class='sidebar-link'>
+                        <li class="sidebar-item <?php echo (isset($_GET['ruta']) && $_GET['ruta'] === 'carreras') ? 'active' : ''; ?>">
+                            <a href="index.php?ruta=carreras" class='sidebar-link'>
                                 <i class="bi bi-collection-fill"></i>
-                                <span>Carrreras</span>
+                                <span>Carreras</span>
                             </a>
                           
                         </li>
 
-                        <li class="sidebar-item  has-sub">
-                            <a href="#" class='sidebar-link'>
+                        <li class="sidebar-item <?php echo (isset($_GET['ruta']) && $_GET['ruta'] === 'calificaciones') ? 'active' : ''; ?>">
+                            <a href="index.php?ruta=calificaciones" class='sidebar-link'>
                                 <i class="bi bi-grid-1x2-fill"></i>
                                 <span>Calificaciones</span>
                             </a>
@@ -45,16 +44,23 @@
                         </li>
 
                     
-                        <li class="sidebar-item  ">
-                            <a href="form-layout.html" class='sidebar-link'>
+                        <li class="sidebar-item <?php echo (isset($_GET['ruta']) && $_GET['ruta'] === 'inscripciones') ? 'active' : ''; ?>">
+                            <a href="index.php?ruta=inscripciones" class='sidebar-link'>
                                 <i class="bi bi-file-earmark-medical-fill"></i>
                                 <span>Inscripciones</span>
                             </a>
                         </li>
 
                         
-                        <li class="sidebar-item  ">
-                            <a href="table.html" class='sidebar-link'>
+                        <li class="sidebar-item <?php echo (isset($_GET['ruta']) && $_GET['ruta'] === 'grupos') ? 'active' : ''; ?>">
+                            <a href="index.php?ruta=grupos" class='sidebar-link'>
+                                <i class="bi bi-people-fill"></i>
+                                <span>Grupos</span>
+                            </a>
+                        </li>
+
+                        <li class="sidebar-item <?php echo (isset($_GET['ruta']) && $_GET['ruta'] === 'usuarios') ? 'active' : ''; ?>">
+                            <a href="index.php?ruta=usuarios" class='sidebar-link'>
                                 <i class="bi bi-grid-1x2-fill"></i>
                                 <span>Usuarios</span>
                             </a>

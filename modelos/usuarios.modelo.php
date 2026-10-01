@@ -1,5 +1,4 @@
 <?php
-// Archivo: modelos/usuarios.modelo.php
 
 class ModeloUsuarios {
 
