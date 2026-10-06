@@ -18,6 +18,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/app.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/pages/inicio.css">
     <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/images/favicon.svg" type="image/x-icon">
     
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/pages/auth.css">
@@ -74,6 +75,8 @@ if (session_status() === PHP_SESSION_NONE) {
     <script src="<?php echo BASE_URL; ?>assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="<?php echo BASE_URL; ?>assets/js/bootstrap.bundle.min.js"></script>
     <script src="<?php echo BASE_URL; ?>assets/js/main.js"></script>
+    <script src="<?php echo BASE_URL; ?>assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="<?php echo BASE_URL; ?>assets/js/confirmaciones.js"></script>
 
 </body>
 </html>

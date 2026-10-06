@@ -112,6 +112,9 @@ $puedeAdministrar = isset($_SESSION["iniciarSesion"], $_SESSION["rol"])
                                     method="POST"
                                     style="display: inline;"
                                     class="formEstadoUsuario"
+                                    data-swal-confirm
+                                    data-swal-confirm-title="<?php echo $usuario["estado"] == "activo" ? "¿Deshabilitar este usuario?" : "¿Habilitar este usuario?"; ?>"
+                                    data-swal-confirm-text="<?php echo htmlspecialchars($usuario["nombre"] . " " . $usuario["apellido"], ENT_QUOTES, "UTF-8"); ?>"
                                 >
                                     <input
                                         type="hidden"
@@ -156,7 +159,7 @@ $puedeAdministrar = isset($_SESSION["iniciarSesion"], $_SESSION["rol"])
 </div>
 
 <?php if (isset($GLOBALS["usuarioMensaje"])): ?>
-    <div class="alert alert-<?php echo htmlspecialchars($GLOBALS["usuarioMensajeTipo"] ?? "info", ENT_QUOTES, "UTF-8"); ?>" role="status">
+    <div class="d-none" data-swal-feedback data-swal-feedback-type="<?php echo htmlspecialchars($GLOBALS["usuarioMensajeTipo"] ?? "info", ENT_QUOTES, "UTF-8"); ?>">
         <?php echo htmlspecialchars($GLOBALS["usuarioMensaje"], ENT_QUOTES, "UTF-8"); ?>
     </div>
 <?php endif; ?>
@@ -165,7 +168,7 @@ $puedeAdministrar = isset($_SESSION["iniciarSesion"], $_SESSION["rol"])
 <div class="modal fade" id="modalCrearUsuario" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="POST">
+            <form method="POST" data-swal-confirm data-swal-confirm-title="¿Crear este usuario?" data-swal-confirm-text="Se guardará la nueva cuenta en el sistema.">
                 <div class="modal-header">
                     <h5 class="modal-title">Nuevo usuario</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -220,7 +223,7 @@ $puedeAdministrar = isset($_SESSION["iniciarSesion"], $_SESSION["rol"])
     <div class="modal-dialog">
         <div class="modal-content">
 
-            <form method="POST">
+            <form method="POST" data-swal-confirm data-swal-confirm-title="¿Guardar los cambios del usuario?" data-swal-confirm-text="Se actualizarán los datos de esta cuenta.">
                 <div class="modal-header">
                     <h5 class="modal-title">Editar usuario</h5>
                     <button type="button"
