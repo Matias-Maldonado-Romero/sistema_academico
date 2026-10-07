@@ -13,14 +13,11 @@
  */
 
 require_once "config/database.php";
-require_once "controladores/usuarios.controlador.php";
-require_once "modelos/usuarios.modelo.php";
 
 session_start();
 
 $resultado = null;
 $paso = $_GET["paso"] ?? "inicio";
-$token = ControladorUsuarios::ctrToken();
 
 // ============================================================
 // PASO 0: Menú principal
@@ -97,27 +94,40 @@ elseif ($paso === "login") {
 // ============================================================
 elseif ($paso === "crear_admin") {
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
-        $datos = [
-            "nombre" => trim($_POST["nombre"] ?? ""),
-            "apellido" => trim($_POST["apellido"] ?? ""),
-            "ci" => trim($_POST["ci"] ?? ""),
-            "telefono" => trim($_POST["telefono"] ?? ""),
-            "correo" => trim($_POST["correo"] ?? ""),
-            "username" => trim($_POST["username"] ?? ""),
-            "password" => $_POST["password"] ?? "",
-            "rol" => "admin",
-            "especialidad" => ""
-        ];
+        $nombre = trim($_POST["nombre"] ?? "");
+        $apellido = trim($_POST["apellido"] ?? "");
+        $ci = trim($_POST["ci"] ?? "");
+        $telefono = trim($_POST["telefono"] ?? "");
+        $correo = trim($_POST["correo"] ?? "");
+        $username = trim($_POST["username"] ?? "");
+        $password = $_POST["password"] ?? "";
 
-        if (empty($datos["nombre"]) || empty($datos["apellido"]) || empty($datos["ci"]) 
-            || empty($datos["correo"]) || empty($datos["username"]) || empty($datos["password"])) {
+        if (empty($nombre) || empty($apellido) || empty($ci) || empty($correo) || empty($username) || empty($password)) {
             $resultado = ["error" => "Todos los campos son obligatorios"];
         } else {
-            $datos["password"] = password_hash($datos["password"], PASSWORD_DEFAULT);
-            if (ModeloUsuarios::mdlRegistrarUsuario($datos)) {
-                $resultado = ["exito" => "Admin creado correctamente. Usuario: " . $datos["username"]];
-            } else {
-                $resultado = ["error" => "No se pudo crear el admin. Verifica que el usuario/email no exista"];
+            try {
+                $db = Database::getConnection();
+                $stmt = $db->prepare(
+                    "INSERT INTO usuarios (nombre, apellido, ci, telefono, correo, username, password, rol, estado)
+                     VALUES (:nombre, :apellido, :ci, :telefono, :correo, :username, :password, 'admin', 'activo')"
+                );
+                $resultado_exec = $stmt->execute([
+                    ":nombre" => $nombre,
+                    ":apellido" => $apellido,
+                    ":ci" => $ci,
+                    ":telefono" => !empty($telefono) ? $telefono : null,
+                    ":correo" => $correo,
+                    ":username" => $username,
+                    ":password" => password_hash($password, PASSWORD_DEFAULT)
+                ]);
+
+                if ($resultado_exec) {
+                    $resultado = ["exito" => "Admin creado correctamente. Usuario: " . $username];
+                } else {
+                    $resultado = ["error" => "No se pudo crear el admin. Verifica que el usuario/email no exista"];
+                }
+            } catch (Exception $e) {
+                $resultado = ["error" => "Error: " . $e->getMessage()];
             }
         }
     } else {
@@ -142,27 +152,49 @@ elseif ($paso === "crear_admin") {
 // ============================================================
 elseif ($paso === "crear_docente") {
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
-        $datos = [
-            "nombre" => trim($_POST["nombre"] ?? ""),
-            "apellido" => trim($_POST["apellido"] ?? ""),
-            "ci" => trim($_POST["ci"] ?? ""),
-            "telefono" => trim($_POST["telefono"] ?? ""),
-            "correo" => trim($_POST["correo"] ?? ""),
-            "username" => trim($_POST["username"] ?? ""),
-            "password" => $_POST["password"] ?? "",
-            "rol" => "docente",
-            "especialidad" => trim($_POST["especialidad"] ?? "Sin especificar")
-        ];
+        $nombre = trim($_POST["nombre"] ?? "");
+        $apellido = trim($_POST["apellido"] ?? "");
+        $ci = trim($_POST["ci"] ?? "");
+        $telefono = trim($_POST["telefono"] ?? "");
+        $correo = trim($_POST["correo"] ?? "");
+        $username = trim($_POST["username"] ?? "");
+        $password = $_POST["password"] ?? "";
+        $especialidad = trim($_POST["especialidad"] ?? "Sin especificar");
 
-        if (empty($datos["nombre"]) || empty($datos["apellido"]) || empty($datos["ci"]) 
-            || empty($datos["correo"]) || empty($datos["username"]) || empty($datos["password"])) {
+        if (empty($nombre) || empty($apellido) || empty($ci) || empty($correo) || empty($username) || empty($password)) {
             $resultado = ["error" => "Todos los campos básicos son obligatorios"];
         } else {
-            $datos["password"] = password_hash($datos["password"], PASSWORD_DEFAULT);
-            if (ModeloUsuarios::mdlRegistrarUsuario($datos)) {
-                $resultado = ["exito" => "Docente creado correctamente. Usuario: " . $datos["username"]];
-            } else {
-                $resultado = ["error" => "No se pudo crear el docente"];
+            try {
+                $db = Database::getConnection();
+                $db->beginTransaction();
+
+                $stmt = $db->prepare(
+                    "INSERT INTO usuarios (nombre, apellido, ci, telefono, correo, username, password, rol, estado)
+                     VALUES (:nombre, :apellido, :ci, :telefono, :correo, :username, :password, 'docente', 'activo')"
+                );
+                $stmt->execute([
+                    ":nombre" => $nombre,
+                    ":apellido" => $apellido,
+                    ":ci" => $ci,
+                    ":telefono" => !empty($telefono) ? $telefono : null,
+                    ":correo" => $correo,
+                    ":username" => $username,
+                    ":password" => password_hash($password, PASSWORD_DEFAULT)
+                ]);
+
+                $idUsuario = (int) $db->lastInsertId();
+
+                $stmt = $db->prepare("INSERT INTO docente (id_usuario, especialidad) VALUES (:id, :esp)");
+                $stmt->execute([
+                    ":id" => $idUsuario,
+                    ":esp" => $especialidad
+                ]);
+
+                $db->commit();
+                $resultado = ["exito" => "Docente creado correctamente. Usuario: " . $username];
+            } catch (Exception $e) {
+                $db->rollBack();
+                $resultado = ["error" => "Error: " . $e->getMessage()];
             }
         }
     } else {
@@ -188,27 +220,45 @@ elseif ($paso === "crear_docente") {
 // ============================================================
 elseif ($paso === "crear_estudiante") {
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
-        $datos = [
-            "nombre" => trim($_POST["nombre"] ?? ""),
-            "apellido" => trim($_POST["apellido"] ?? ""),
-            "ci" => trim($_POST["ci"] ?? ""),
-            "telefono" => trim($_POST["telefono"] ?? ""),
-            "correo" => trim($_POST["correo"] ?? ""),
-            "username" => trim($_POST["username"] ?? ""),
-            "password" => $_POST["password"] ?? "",
-            "rol" => "estudiante",
-            "especialidad" => ""
-        ];
+        $nombre = trim($_POST["nombre"] ?? "");
+        $apellido = trim($_POST["apellido"] ?? "");
+        $ci = trim($_POST["ci"] ?? "");
+        $telefono = trim($_POST["telefono"] ?? "");
+        $correo = trim($_POST["correo"] ?? "");
+        $username = trim($_POST["username"] ?? "");
+        $password = $_POST["password"] ?? "";
 
-        if (empty($datos["nombre"]) || empty($datos["apellido"]) || empty($datos["ci"]) 
-            || empty($datos["correo"]) || empty($datos["username"]) || empty($datos["password"])) {
+        if (empty($nombre) || empty($apellido) || empty($ci) || empty($correo) || empty($username) || empty($password)) {
             $resultado = ["error" => "Todos los campos son obligatorios"];
         } else {
-            $datos["password"] = password_hash($datos["password"], PASSWORD_DEFAULT);
-            if (ModeloUsuarios::mdlRegistrarUsuario($datos)) {
-                $resultado = ["exito" => "Estudiante creado correctamente. Usuario: " . $datos["username"]];
-            } else {
-                $resultado = ["error" => "No se pudo crear el estudiante"];
+            try {
+                $db = Database::getConnection();
+                $db->beginTransaction();
+
+                $stmt = $db->prepare(
+                    "INSERT INTO usuarios (nombre, apellido, ci, telefono, correo, username, password, rol, estado)
+                     VALUES (:nombre, :apellido, :ci, :telefono, :correo, :username, :password, 'estudiante', 'activo')"
+                );
+                $stmt->execute([
+                    ":nombre" => $nombre,
+                    ":apellido" => $apellido,
+                    ":ci" => $ci,
+                    ":telefono" => !empty($telefono) ? $telefono : null,
+                    ":correo" => $correo,
+                    ":username" => $username,
+                    ":password" => password_hash($password, PASSWORD_DEFAULT)
+                ]);
+
+                $idUsuario = (int) $db->lastInsertId();
+
+                $stmt = $db->prepare("INSERT INTO estudiante (id_usuario) VALUES (:id)");
+                $stmt->execute([":id" => $idUsuario]);
+
+                $db->commit();
+                $resultado = ["exito" => "Estudiante creado correctamente. Usuario: " . $username];
+            } catch (Exception $e) {
+                $db->rollBack();
+                $resultado = ["error" => "Error: " . $e->getMessage()];
             }
         }
     } else {
@@ -232,48 +282,59 @@ elseif ($paso === "crear_estudiante") {
 // PASO 5: Listar usuarios
 // ============================================================
 elseif ($paso === "listar_usuarios") {
-    $usuarios = ModeloUsuarios::mdlMostrarUsuarios();
-    $resultado = [
-        "titulo" => "Lista de usuarios",
-        "tabla" => ["id_usuario", "nombre", "apellido", "username", "rol", "estado"],
-        "datos" => $usuarios
-    ];
+    try {
+        $stmt = Database::getConnection()->query(
+            "SELECT id_usuario, nombre, apellido, ci, username, rol, estado FROM usuarios ORDER BY id_usuario"
+        );
+        $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $resultado = [
+            "titulo" => "Lista de usuarios",
+            "tabla" => ["id_usuario", "nombre", "apellido", "ci", "username", "rol", "estado"],
+            "datos" => $usuarios
+        ];
+    } catch (Exception $e) {
+        $resultado = ["error" => $e->getMessage()];
+    }
 }
 
 // ============================================================
 // PASO 6: Verificar perfiles
 // ============================================================
 elseif ($paso === "verificar_perfiles") {
-    $db = Database::getConnection();
-    $stmt = $db->query(
-        "SELECT d.id_docente, u.nombre, u.apellido, u.username, d.especialidad
-         FROM docente d
-         INNER JOIN usuarios u ON u.id_usuario = d.id_usuario
-         ORDER BY d.id_docente"
-    );
-    $docentes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    try {
+        $db = Database::getConnection();
+        $stmt = $db->query(
+            "SELECT d.id_docente, u.nombre, u.apellido, u.username, d.especialidad
+             FROM docente d
+             INNER JOIN usuarios u ON u.id_usuario = d.id_usuario
+             ORDER BY d.id_docente"
+        );
+        $docentes = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
-    $stmt = $db->query(
-        "SELECT e.id_estudiante, u.nombre, u.apellido, u.username, e.rude
-         FROM estudiante e
-         INNER JOIN usuarios u ON u.id_usuario = e.id_usuario
-         ORDER BY e.id_estudiante"
-    );
-    $estudiantes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $db->query(
+            "SELECT e.id_estudiante, u.nombre, u.apellido, u.username, e.rude
+             FROM estudiante e
+             INNER JOIN usuarios u ON u.id_usuario = e.id_usuario
+             ORDER BY e.id_estudiante"
+        );
+        $estudiantes = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
-    $resultado = [
-        "titulo" => "Verificar perfiles vinculados",
-        "seccion1" => [
-            "titulo" => "Docentes",
-            "tabla" => ["id_docente", "nombre", "apellido", "username", "especialidad"],
-            "datos" => $docentes ?: ["error" => "No hay docentes"]
-        ],
-        "seccion2" => [
-            "titulo" => "Estudiantes",
-            "tabla" => ["id_estudiante", "nombre", "apellido", "username", "rude"],
-            "datos" => $estudiantes ?: ["error" => "No hay estudiantes"]
-        ]
-    ];
+        $resultado = [
+            "titulo" => "Verificar perfiles vinculados",
+            "seccion1" => [
+                "titulo" => "Docentes",
+                "tabla" => ["id_docente", "nombre", "apellido", "username", "especialidad"],
+                "datos" => !empty($docentes) ? $docentes : ["error" => "No hay docentes"]
+            ],
+            "seccion2" => [
+                "titulo" => "Estudiantes",
+                "tabla" => ["id_estudiante", "nombre", "apellido", "username", "rude"],
+                "datos" => !empty($estudiantes) ? $estudiantes : ["error" => "No hay estudiantes"]
+            ]
+        ];
+    } catch (Exception $e) {
+        $resultado = ["error" => $e->getMessage()];
+    }
 }
 
 // ============================================================
@@ -282,22 +343,26 @@ elseif ($paso === "verificar_perfiles") {
 elseif ($paso === "ver_bd") {
     if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $tabla = $_POST["tabla"] ?? "";
-        $tablas = ["usuarios", "docente", "estudiante", "curso", "materia", "gestion", "inscripcion", "nota"];
+        $tablasValidas = ["usuarios", "docente", "estudiante", "curso", "materia", "gestion", "inscripcion", "nota"];
 
-        if (!in_array($tabla, $tablas, true)) {
+        if (!in_array($tabla, $tablasValidas, true)) {
             $resultado = ["error" => "Tabla no válida"];
         } else {
-            $stmt = Database::getConnection()->query("SELECT * FROM `$tabla` LIMIT 100");
-            $datos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            try {
+                $stmt = Database::getConnection()->query("SELECT * FROM " . $tabla . " LIMIT 100");
+                $datos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            if (empty($datos)) {
-                $resultado = ["info" => "No hay registros en $tabla"];
-            } else {
-                $resultado = [
-                    "titulo" => "Contenido de tabla: $tabla",
-                    "tabla" => array_keys($datos[0]),
-                    "datos" => $datos
-                ];
+                if (empty($datos)) {
+                    $resultado = ["info" => "No hay registros en " . $tabla];
+                } else {
+                    $resultado = [
+                        "titulo" => "Contenido de tabla: " . $tabla,
+                        "tabla" => array_keys($datos[0]),
+                        "datos" => $datos
+                    ];
+                }
+            } catch (Exception $e) {
+                $resultado = ["error" => $e->getMessage()];
             }
         }
     } else {
@@ -377,7 +442,7 @@ elseif ($paso === "ver_bd") {
         </div>
         <?php endif; ?>
 
-        <?php if ($resultado["formulario"] ?? false === "login"): ?>
+        <?php if (($resultado["formulario"] ?? "") === "login"): ?>
         <div class="card">
             <div class="card-header bg-primary text-white"><?php echo $resultado["titulo"]; ?></div>
             <div class="card-body">
@@ -395,7 +460,7 @@ elseif ($paso === "ver_bd") {
         </div>
         <?php endif; ?>
 
-        <?php if ($resultado["formulario"] ?? false === "crear_usuario"): ?>
+        <?php if (($resultado["formulario"] ?? "") === "crear_usuario"): ?>
         <div class="card">
             <div class="card-header bg-primary text-white"><?php echo $resultado["titulo"]; ?></div>
             <div class="card-body">
@@ -413,7 +478,7 @@ elseif ($paso === "ver_bd") {
         </div>
         <?php endif; ?>
 
-        <?php if ($resultado["formulario"] ?? false === "tabla"): ?>
+        <?php if (($resultado["formulario"] ?? "") === "tabla"): ?>
         <div class="card">
             <div class="card-header bg-primary text-white"><?php echo $resultado["titulo"]; ?></div>
             <div class="card-body">

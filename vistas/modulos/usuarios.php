@@ -204,7 +204,9 @@ $puedeAdministrar = isset($_SESSION["iniciarSesion"], $_SESSION["rol"])
                         <select class="form-select" name="nuevoRol" required>
                             <option value="Admin">Administrador</option>
                             <option value="Docente">Docente</option>
+                            <option value="Secretaria">Secretaria</option>
                             <option value="Usuario">Usuario</option>
+                            <option value="Estudiante">Estudiante</option>
                         </select>
                     </div>
                 </div>

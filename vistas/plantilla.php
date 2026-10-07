@@ -1,7 +1,11 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-    session_status(); 
+    session_start();
 }
+
+// Rutas y roles permitidos (config/rutas.php). También las usa el sidebar.
+$rutas = require "config/rutas.php";
+$rolActual = strtolower(trim((string) ($_SESSION["rol"] ?? "")));
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -36,25 +40,25 @@ if (session_status() === PHP_SESSION_NONE) {
                 
                 include "vistas/modulos/cabecera.php";
 
-                $rutasPermitidas = [
-                    "inicio",
-                    "usuarios",
-                    "carreras",
-                    "materias",
-                    "grupos",
-                    "inscripciones",
-                    "calificaciones",
-                    "salir"
-                ];
+                $rutaSolicitada = $_GET["ruta"] ?? "inicio";
 
-                if (isset($_GET["ruta"])) {
-                    if (in_array($_GET["ruta"], $rutasPermitidas)) {
-                        include "vistas/modulos/" . $_GET["ruta"] . ".php";
-                    } else {
-                        include "vistas/modulos/404.php";
-                    }
+                if (!is_string($rutaSolicitada)
+                    || !isset($rutas[$rutaSolicitada])
+                    || !is_file("vistas/modulos/" . $rutaSolicitada . ".php")) {
+
+                    // La ruta no existe o no está registrada en config/rutas.php
+                    include "vistas/modulos/404.php";
+
+                } elseif ($rutaSolicitada !== "salir"
+                    && !in_array($rolActual, $rutas[$rutaSolicitada]["roles"], true)) {
+
+                    // La ruta existe, pero este rol no puede entrar.
+                    // Como los controladores corren dentro de la vista, esto también
+                    // bloquea los POST: nadie ejecuta acciones de un módulo que no puede ver.
+                    include "vistas/modulos/403.php";
+
                 } else {
-                    include "vistas/modulos/inicio.php";
+                    include "vistas/modulos/" . $rutaSolicitada . ".php";
                 }
 
                 include "vistas/modulos/footer.php";

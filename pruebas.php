@@ -199,7 +199,8 @@ if (empty($gestiones)) {
     } elseif ($activasCount > 1) {
         $advertencias[] = "⚠️ Hay " . $activasCount . " gestiones activas. Idealmente solo debe haber una.";
     } else {
-        $info[] = "✅ Una gestión activa: " . $gestiones[0]["año"];
+        $gestionActiva = array_values(array_filter($gestiones, fn($g) => $g["estado"] === "activa"))[0];
+        $info[] = "✅ Una gestión activa: " . $gestionActiva["año"];
     }
 }
 
