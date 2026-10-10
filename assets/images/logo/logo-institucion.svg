@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 72" role="img" aria-labelledby="title">
+  <title id="title">Unidad Educativa</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 27 34 14l27 13-27 13L7 27Z" fill="#435ebe" stroke="#435ebe" stroke-width="2"/>
+    <path d="M16 34v13c10 8 26 8 36 0V34L34 43 16 34Z" fill="#43c0d5" stroke="#43c0d5" stroke-width="2"/>
+    <path d="M59 28v15" stroke="#435ebe" stroke-width="3"/>
+    <circle cx="59" cy="47" r="3" fill="#435ebe" stroke="#435ebe"/>
+    <path d="M13 56c6-5 13-5 21 0 8-5 15-5 21 0v7c-7-4-14-4-21 1-7-5-14-5-21-1v-7Z" fill="#fff" stroke="#435ebe" stroke-width="2"/>
+    <path d="M34 56v8" stroke="#435ebe" stroke-width="2"/>
+  </g>
+  <text x="76" y="35" fill="#293b84" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="700" letter-spacing=".5">UNIDAD</text>
+  <text x="76" y="59" fill="#435ebe" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600" letter-spacing=".4">EDUCATIVA</text>
+</svg>

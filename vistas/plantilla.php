@@ -22,6 +22,7 @@ $rolActual = strtolower(trim((string) ($_SESSION["rol"] ?? "")));
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/app.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/pages/sidebar-width.css">
     <link rel="stylesheet" href="<?php echo BASE_URL; ?>assets/css/pages/inicio.css">
     <link rel="shortcut icon" href="<?php echo BASE_URL; ?>assets/images/favicon.svg" type="image/x-icon">
     
@@ -30,7 +31,10 @@ $rolActual = strtolower(trim((string) ($_SESSION["rol"] ?? "")));
 <body>
 
     <?php
-    if (isset($_SESSION["iniciarSesion"]) && $_SESSION["iniciarSesion"] == "ok") {
+    if (isset($_GET["ruta"]) && $_GET["ruta"] === "solicitud-inscripcion") {
+        include "vistas/modulos/solicitud-inscripcion.php";
+
+    } elseif (isset($_SESSION["iniciarSesion"]) && $_SESSION["iniciarSesion"] == "ok") {
         
         echo '<div id="app" class="app-wrapper">';
 
@@ -69,7 +73,7 @@ $rolActual = strtolower(trim((string) ($_SESSION["rol"] ?? "")));
 
     } else {
         if (isset($_GET["ruta"]) && $_GET["ruta"] === "registro") {
-            include "vistas/modulos/registro.php";
+            include "vistas/modulos/solicitud-inscripcion.php";
         } else {
             include "vistas/modulos/login.php";
         }

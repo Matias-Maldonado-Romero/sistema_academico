@@ -2,7 +2,7 @@
 
 class Database {
     private $host = "localhost";
-    private $db_name = "sistema_academico respaldo";
+    private $db_name = "sistema_academico2";
     private $username = "root"; 
     private $password = ""; 
     public $conn;

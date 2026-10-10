@@ -1,0 +1,15 @@
+@media screen and (min-width: 1200px) {
+    #sidebar {
+        width: 270px;
+    }
+
+    #main {
+        margin-left: 270px;
+    }
+}
+
+#sidebar .sidebar-header .logo img {
+    width: auto;
+    height: 44px;
+    max-width: 100%;
+}

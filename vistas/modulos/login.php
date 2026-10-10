@@ -5,7 +5,7 @@
         <div class="col-lg-5 col-12">
             <div id="auth-left">
                 <div class="auth-logo">
-                    <a href="#"><img src="<?php echo BASE_URL; ?>assets/images/logo/logo.png" alt="Logo"></a>
+                    <a href="#"><img src="<?php echo BASE_URL; ?>assets/images/logo/logo-institucion.svg" alt="Logo de la Unidad Educativa"></a>
                 </div>
                 <h1 class="auth-title">Log in.</h1>
                 <p class="auth-subtitle mb-5">Log in with your data that you entered during registration.</p>
@@ -39,8 +39,9 @@
                 </form>
                 
                 <div class="text-center mt-5 text-lg fs-4">
-                    <p class="text-gray-600">Don't have an account? 
-                        <a href="index.php?ruta=registro" class="font-bold">Sign up</a>
+                    <p class="text-gray-600">¿Deseas inscribirte?
+                        <a href="index.php?ruta=solicitud-inscripcion" class="font-bold">Solicitar inscripción en línea</a>
+                    </p>
                     <p><a class="font-bold" href="#">Forgot password?</a>.</p>
                 </div>
             </div>

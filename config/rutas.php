@@ -17,6 +17,7 @@
 
 $todos   = ["admin", "director", "secretaria", "docente", "tutor", "estudiante"];
 $gestion = ["admin", "director", "secretaria"];
+$gestionInscripciones = ["admin", "director", "secretaria", "tutor"];
 
 return [
     "inicio" => [
@@ -27,7 +28,7 @@ return [
     "inscripciones" => [
         "titulo" => "Inscripciones",
         "icono"  => "bi-file-earmark-medical-fill",
-        "roles"  => $gestion
+        "roles"  => $gestionInscripciones
     ],
     "materias" => [
         "titulo" => "Materias",
@@ -40,11 +41,6 @@ return [
         "roles"  => ["admin", "director", "secretaria", "docente"]
     ],
     // Pendientes de reemplazar por los módulos de Cursos y Docentes (esquema anterior)
-    "carreras" => [
-        "titulo" => "Carreras",
-        "icono"  => "bi-collection-fill",
-        "roles"  => ["admin", "director"]
-    ],
     "grupos" => [
         "titulo" => "Grupos",
         "icono"  => "bi-people-fill",

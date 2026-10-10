@@ -7,7 +7,7 @@ $rutaActual = (isset($_GET["ruta"]) && is_string($_GET["ruta"])) ? $_GET["ruta"]
         <div class="sidebar-header">
             <div class="d-flex justify-content-between">
                 <div class="logo">
-                    <a href="index.php?ruta=inicio"><img src="<?php echo BASE_URL; ?>assets/images/logo/logo.png" alt="Logo"></a>
+                    <a href="index.php?ruta=inicio"><img src="<?php echo BASE_URL; ?>assets/images/logo/logo-institucion.svg" alt="Logo de la Unidad Educativa"></a>
                 </div>
                 <div class="toggler">
                     <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
